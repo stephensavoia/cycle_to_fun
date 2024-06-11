@@ -19,7 +19,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export const meta: MetaFunction = ({ matches }) => {
   const parentMeta = matches.flatMap((match) => match.meta ?? []);
-  console.log(parentMeta);
   return [
     ...parentMeta,
     { title: "Cycle TO Fun" },

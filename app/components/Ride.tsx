@@ -1,5 +1,3 @@
-import { useRef } from "react";
-
 interface RideProps {
   title: string;
   description: string;
@@ -28,7 +26,6 @@ function Ride({
   slug,
 }: RideProps) {
   const handleShare = async () => {
-    // Get navigator variable from window object
     const navigator = window.navigator;
     if (navigator.share) {
       try {

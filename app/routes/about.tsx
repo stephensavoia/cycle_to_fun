@@ -2,7 +2,6 @@ import type { MetaFunction } from "@remix-run/cloudflare";
 
 export const meta: MetaFunction = ({ matches }) => {
   const parentMeta = matches.flatMap((match) => match.meta ?? []);
-  console.log(parentMeta);
   return [
     ...parentMeta,
     { title: "About | Cycle TO Fun" },
