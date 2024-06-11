@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* change variable --p to red */
+:root {
+  --p: 51.29% 0.167 262.36;
+  --n: 51.29% 0.167 262.36;
+}
+
+body {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.ride-page-container {
+  min-height: 484px;
+}
+
+/* Menu */
+
+.navbar {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.logo {
+  max-height: 100px;
+}
+
+.drawer {
+  z-index: 1;
+}
+
+.top-negative-100 {
+  top: -100px;
+}
+
+:where(.menu li) {
+  margin-bottom: 0.5rem;
+}
+
+.menu a {
+  font-family: "Varela Round", sans-serif;
+}
+
+.menu li > label:hover,
+.menu li > form:hover,
+.menu li > label:active,
+.menu li > form:active {
+  background-color: transparent !important;
+  color: #000 !important;
+}
+
+/* Cards */
+
+.divider {
+  margin-top: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.flex-col:last-child .ride-card:last-child .divider {
+  opacity: 0; /* hide last divider, if there's no "Load More" button */
+}
+
+.card {
+  border-radius: 0;
+}
+
+.card figure {
+  min-height: 252px;
+}
+
+.card figure::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.ride-card-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  color: white;
+  text-align: center;
+  font-weight: 800;
+  font-size: 2.8rem;
+  line-height: 1.25;
+  cursor: default;
+  filter: drop-shadow(0rem 0rem 2rem rgba(0, 0, 0, 0.8));
+  text-shadow: 0 0 1rem rgba(0, 0, 0, 0.8);
+}
+
+.card-compact .card-body {
+  font-size: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.btn-getmap {
+  font-family: "Varela Round", sans-serif;
+  border-radius: 0;
+  font-size: 1.25rem;
+  letter-spacing: 0.05rem;
+  line-height: 1.7rem;
+  width: 5.5rem;
+  height: 5.5rem;
+}
+
+.btn-extra {
+  padding: 0.5rem 1rem;
+  height: 2.15rem;
+  min-height: 2.15rem;
+  width: 100%;
+}
+
+.menu li > *:not(ul, .menu-title, details, .btn):active,
+.menu li > *:not(ul, .menu-title, details, .btn).active,
+.menu li > details > summary:active {
+  background-color: oklch(56.45% 0.166 262.4);
+}
+
+.menu li > *:not(ul, .menu-title, details, .btn):active,
+.menu li > *:not(ul, .menu-title, details, .btn).active,
+.menu li > details > summary:active {
+  background-color: oklch(56.45% 0.166 262.4);
+}
+
+/* @supports (color: color-mix(in oklab, white, white)) {
+  .card .btn:hover,
+  .card .btn-outline.btn-primary:hover {
+    background-color: oklch(56.45% 0.166 262.4);
+    border-color: oklch(56.45% 0.166 262.4);
+  }
+} */
+
+.ride-tags {
+  font-size: 0.875rem;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Items Grid */
+.items-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr));
+  gap: 4px;
+}
+
+.item {
+  height: 100%;
+  width: 100%;
+  border-radius: 6px;
+}
+
+/* footer */
+.footer {
+  justify-content: space-evenly;
+}
+
+.footer .logo {
+  max-height: 150px;
+  opacity: 0.6;
+}
