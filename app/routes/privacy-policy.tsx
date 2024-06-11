@@ -1,12 +1,27 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ matches }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  console.log(parentMeta);
   return [
+    ...parentMeta,
     { title: "Privacy Policy | Cycle TO Fun" },
     {
       name: "description",
       content:
-        "Learn about the privacy practices of Cycle TO Fun, including information collection and use.",
+        "Cycle TO Fun is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.",
+    },
+    { name: "og:url", content: "https://www.cycletofun.com/privacy-policy" },
+    { name: "og:type", content: "website" },
+    { name: "og:title", content: "Privacy Policy | Cycle TO Fun" },
+    {
+      name: "og:description",
+      content:
+        "Cycle TO Fun is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.",
+    },
+    {
+      name: "og:image",
+      content: "https://www.cycletofun.com/img/test-img.jpg",
     },
   ];
 };

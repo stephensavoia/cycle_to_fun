@@ -17,40 +17,28 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return data;
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  let pageData;
-  if (!data) {
-    pageData = {
-      id: 0,
-      title: "random",
-      description: "Search for a random ride.",
-      mapUrl: "/",
-      tags: "random",
-      imageUrl: "randomride.jpg",
-      altText: "random ride",
-      slug: "random",
-    };
-  } else {
-    pageData = data;
-  }
+export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  const metaTitle = data?.title ? data?.title : "Search | Cycle TO Fun";
+  const metaDescription = data?.description
+    ? data?.description
+    : "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.";
+  const metaUrl = data?.slug
+    ? `https://www.cycletofun.com/${data?.slug}`
+    : "https://www.cycletofun.com/";
+  const metaImg = data?.imageUrl
+    ? `https://www.cycletofun.com${data?.imageUrl}`
+    : "https://www.cycletofun.com/img/test-img.jpg";
+
   return [
-    { title: `${pageData.title} | Cycle TO Fun` },
-    {
-      name: "description",
-      content:
-        "Browse through our collection of in and around Toronto and the GTA.",
-    },
-    { name: "og:url", content: "https://idontknowyet.com/" },
+    ...parentMeta,
+    { title: metaTitle },
+    { name: "description", content: metaDescription },
+    { name: "og:url", content: metaUrl },
     { name: "og:type", content: "website" },
-    { name: "og:title", content: "Cycle TO Fun" },
-    {
-      name: "og:description",
-      content: "TESTING TESTING TESTING",
-    },
-    {
-      name: "og:image",
-      content: "https://idontknowyet.com/images/testing.jpg",
-    },
+    { name: "og:title", content: metaTitle },
+    { name: "og:description", content: metaDescription },
+    { name: "og:image", content: metaImg },
   ];
 };
 

@@ -19,24 +19,31 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return { rides, page, hasNextPage, query };
 }
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  const metaTitle =
+    data?.query != ""
+      ? `Search for "${data?.query}" | Cycle TO Fun`
+      : "Search | Cycle TO Fun";
   return [
-    { title: "Cycle TO Fun" },
+    ...parentMeta,
+    { title: metaTitle },
     {
       name: "description",
       content:
-        "Browse through our collection of in and around Toronto and the GTA.",
+        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
     },
-    { name: "og:url", content: "https://idontknowyet.com/" },
+    { name: "og:url", content: "https://www.cycletofun.com/privacy-policy" },
     { name: "og:type", content: "website" },
-    { name: "og:title", content: "Cycle TO Fun" },
+    { name: "og:title", content: metaTitle },
     {
       name: "og:description",
-      content: "TESTING TESTING TESTING",
+      content:
+        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
     },
     {
       name: "og:image",
-      content: "https://idontknowyet.com/images/testing.jpg",
+      content: "https://www.cycletofun.com/img/test-img.jpg",
     },
   ];
 };

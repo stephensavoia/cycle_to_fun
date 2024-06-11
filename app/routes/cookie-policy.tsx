@@ -1,12 +1,27 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ matches }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  console.log(parentMeta);
   return [
+    ...parentMeta,
     { title: "Cookie Policy | Cycle TO Fun" },
     {
       name: "description",
       content:
-        "Understand how Cycle TO Fun uses cookies and your choices regarding cookie usage.",
+        'Cookies are small text files that are placed on your device to help the Site provide a better user experience. Cookies can be "persistent" or "session" cookies. Persistent cookies remain on your device for a set period or until you delete them, while session cookies are deleted once you close your web browser.',
+    },
+    { name: "og:url", content: "https://www.cycletofun.com/cookie-policy" },
+    { name: "og:type", content: "website" },
+    { name: "og:title", content: "Cookie Policy | Cycle TO Fun" },
+    {
+      name: "og:description",
+      content:
+        'Cookies are small text files that are placed on your device to help the Site provide a better user experience. Cookies can be "persistent" or "session" cookies. Persistent cookies remain on your device for a set period or until you delete them, while session cookies are deleted once you close your web browser.',
+    },
+    {
+      name: "og:image",
+      content: "https://www.cycletofun.com/img/test-img.jpg",
     },
   ];
 };

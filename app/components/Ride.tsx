@@ -27,6 +27,24 @@ function Ride({
   altText,
   slug,
 }: RideProps) {
+  const handleShare = async () => {
+    // Get navigator variable from window object
+    const navigator = window.navigator;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          text: description,
+          url: `https://www.cycletofun.com/${slug}`,
+        });
+      } catch (error) {
+        console.error("Something went wrong sharing the content", error);
+      }
+    } else {
+      console.log("Web Share API is not supported in your browser");
+    }
+  };
+
   return (
     <div className="ride-card w-11/12 mx-auto">
       <div className="card card-compact w-auto mx-auto max-w-[30rem] bg-base-100">
@@ -39,7 +57,10 @@ function Ride({
             <a href={mapUrl} className="btn btn-primary btn-getmap">
               GET MAP
             </a>
-            <button className="btn btn-outline btn-primary btn-extra">
+            <button
+              className="btn btn-outline btn-primary btn-extra"
+              onClick={handleShare}
+            >
               Share
             </button>
             <a

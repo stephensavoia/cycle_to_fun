@@ -1,12 +1,27 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ matches }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  console.log(parentMeta);
   return [
+    ...parentMeta,
     { title: "About | Cycle TO Fun" },
     {
       name: "description",
       content:
         "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
+    },
+    { name: "og:url", content: "https://www.cycletofun.com/about" },
+    { name: "og:type", content: "website" },
+    { name: "og:title", content: "About | Cycle TO Fun" },
+    {
+      name: "og:description",
+      content:
+        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
+    },
+    {
+      name: "og:image",
+      content: "https://www.cycletofun.com/img/test-img.jpg",
     },
   ];
 };
