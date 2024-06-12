@@ -19,7 +19,7 @@ let rides = [
     title: "St. Lawrence Market to Woodbine Beach Park",
     description:
       "Ride from St. Lawrence Market, along Commissioner St. and the Lakeshore, to Woodbine Beach Park for a delightful picnic. (Note: The market is closed on Mondays.)",
-    mapUrl: "https://maps.app.goo.gl/PGAXVKZb9C9dqSZR7",
+    mapUrl: "https://maps.app.goo.gl/nnaHsLGpbC4D2a1B9",
     tags: "St Lawrence Market, Woodbine Beach, Lakeshore, Commissioners, food, picnic, Bike Share, Toronto, Beaches, East End",
     duration: "25min",
     distance: "7km",
@@ -34,7 +34,7 @@ let rides = [
     title: "Casa Loma to Distillery District",
     description:
       "Enjoy an easy, downhill ride from Casa Loma, through the University of Toronto, along College and Sherbourne Streets, and ending at the Distillery District for a refreshing beer.",
-    mapUrl: "https://maps.app.goo.gl/4cW1BWbDuLCxuC1bA",
+    mapUrl: "https://maps.app.goo.gl/Uo9DvztkUBjh7iBG6",
     tags: "Casa Loma, Distillery, U of T, Corktown, Bike Share, Toronto",
     duration: "30min",
     distance: "7km",
@@ -49,7 +49,7 @@ let rides = [
     title: "Messini Authentic Gyros to Woodbine Beach Park",
     description:
       "Grab a gyro from Messini Authentic Gyros and head down to Woodbine Beach Park. Despite what Google Maps suggests, you can ride directly from Knox Ave to the Lakeshore bike trail via a short connecting path, avoiding any backtracking.",
-    mapUrl: "https://maps.app.goo.gl/NTRyTm1Gk1WjwXCZ6",
+    mapUrl: "https://maps.app.goo.gl/K4kGwUr4arJV5nqV6",
     tags: "Mesini Authentic Gyros, Woodbine Beach, Lakeshore, food, picnic, Bike Share, Toronto, Beaches, East End",
     duration: "25min",
     distance: "7km",
@@ -64,7 +64,7 @@ let rides = [
     title: "James Gardens to Tom's Dairy Freeze",
     description:
       "Start your bike ride at the beautiful James Gardens, and enjoy the scenic route as you make your way to Tom's Dairy Freeze for some delicious soft-serve ice cream. This hilly journey will give you a great workout, allowing you to enjoy your treat guilt-free.",
-    mapUrl: "https://maps.app.goo.gl/M3k8npjs1bEYf2km8",
+    mapUrl: "https://maps.app.goo.gl/M8uL7WSxN9vdxk7GA",
     tags: "James Gardens, Tom's Dairy Freeze, food, ice cream, Toronto, West End, Etobicoke",
     duration: "30min",
     distance: "9km",
@@ -79,7 +79,7 @@ let rides = [
     title: "Lalibela Cuisine to PlanB",
     description:
       "Ride from Lalibela Cuisine on Danforth to PlanB in Etobicoke. Make sure to stop at some of the shops and attractions on Bloor Street West so tht you can work up an appetite between these two delicious African restauruants.",
-    mapUrl: "https://maps.app.goo.gl/YQyecLr8vYWCbZWG9",
+    mapUrl: "https://maps.app.goo.gl/G9uAVqyJE78fYveVA",
     tags: "Lalibela Cuisine, PlanB, Bloor, Danforth, food, Bike Share, Toronto, East End, Etobicoke",
     duration: "1h",
     distance: "15km",
@@ -94,7 +94,7 @@ let rides = [
     title: "Sorauren Market to Trinity Bellwoods",
     description:
       "Shop for local food products at the Sorauren Market before heading to another great Toronto park: Trinity Bellwoods. Pick up some craft beer at the Bellwoods Brewery bottle shop and enjoy it in the park as part of the city's Alcohol in Parks Program. (Market hours: Monday, 3-7pm)",
-    mapUrl: "https://maps.app.goo.gl/g4pq9AyUZSUwv4ka9",
+    mapUrl: "https://maps.app.goo.gl/zGhmd1UNbVVVFvTL9",
     tags: "Sorauren Market, Trinity Bellwoods, food, picnic, Bike Share, Toronto, West End",
     duration: "15min",
     distance: "4km",
@@ -109,7 +109,7 @@ let rides = [
     title: "Dufferin Mall to Eaton Centre",
     description:
       "Ride from Dufferin Grove Park, along Harbord, and through the University of Toronto campus to the Eaton Centre. Enter the Eaton Centre from the Trinity Square entrance to avoid the crowds and appreciate the beauty of the square.",
-    mapUrl: "https://maps.app.goo.gl/Xgaqsch9qLLojaDn6",
+    mapUrl: "https://maps.app.goo.gl/xw4YAEXfpBEQPyDM6",
     tags: "Dufferin Mall, Eaton Centre, Harbord, U of T, shopping, Bike Share, Toronto",
     duration: "20 minutes",
     distance: "6 km",
@@ -124,7 +124,7 @@ let rides = [
     title: "High Park to Cheese Boutique",
     description:
       "Ride through High Park, along the lake, and up to Cheese Boutique for some fresh, gourmet foods. Before heading back to High Park, stop for a picnic by the lake with all of your delicious finds.",
-    mapUrl: "https://maps.app.goo.gl/4LGPvEHDLHvYhGjS9",
+    mapUrl: "https://maps.app.goo.gl/kTKRHrLvkibTVqsF9",
     tags: "High Park, Cheese Boutique, Lake Ontario, food, picnic, Bike Share, Toronto, West End",
     duration: "20min",
     distance: "5km",
