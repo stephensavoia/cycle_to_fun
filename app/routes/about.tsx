@@ -45,29 +45,96 @@ export default function About() {
           clicking "Random Ride". Each ride has a "Get Map" button that links to
           a Google Map.
         </p>
-        <p className="mt-3">
-          Below is a diagram showing how to read our ride information cards:
-        </p>
         <img
-          src="/img/instructions.jpg"
+          src="/img/how-to-use-cycle-to-fun.png"
           alt="Diagram showing how to read ride information"
           className="mt-3"
         />
         <ol className="list-decimal list-outside space-y-2 mt-2 ml-4">
-          <li>Get the Google Map directions for the ride.</li>
-          <li>Send a link with ride information to a friend.</li>
           <li>
-            Ride difficulty rating: <em>easy</em>, <em>moderate</em>, or{" "}
-            <em>difficult</em>. This indicates the physical fitness level
-            required for the ride. Check the distance and elevation change on
-            the ride's Google Map for more details.
+            Click "GET MAP" to get the Google Map directions for the ride.
           </li>
           <li>
-            Ride infrastructure type: <em>trails</em>, <em>cycle</em>{" "}
-            <em>tracks</em>, <em>bike lanes</em>, or <em>side streets</em>.
-            Rides may feature multiple types of infrastructure. Only the most
-            prevelant infrastructure type is listed. Check the ride's Google Map
-            for full details.
+            Click "Share" to send a link with ride information to a friend.
+          </li>
+          <li>
+            There are 3 different ride difficulty ratings: <em>easy</em>,{" "}
+            <em>moderate</em>, or <em>difficult</em>. This indicates the
+            physical fitness level required for the ride. Check the distance and
+            elevation change on the ride's Google Map for more details.
+          </li>
+          <li>
+            There are 4 different ride infrastructure types: <em>trails</em>,{" "}
+            <em>cycle</em> <em>tracks</em>, <em>bike lanes</em>, or{" "}
+            <em>side streets</em>. Rides may feature multiple types of
+            infrastructure. Only the most prevelant infrastructure type is
+            listed. Check the ride's Google Map for full details.
+          </li>
+        </ol>
+      </section>
+
+      <section className="mb-6">
+        <h2 className="text-2xl font-semibold mb-4">How to Google Maps</h2>
+        <p></p>
+        <img
+          src="/img/how-to-use-google-maps.png"
+          alt="Diagram showing how to use Google Maps"
+          className="mt-3"
+        />
+        <ol className="list-decimal list-outside space-y-2 mt-2 ml-4">
+          <li>
+            Click "Preview" to view the cycling route in Google Maps. It's
+            always a good idea to preview your route before you begin your ride.
+          </li>
+          <li>
+            Once you arrive at the location of the ride's starting point, you
+            will notice that the "Preview" button has changed to a "Start"
+            button. Select the "Start" button to open the route in Google Map's
+            navigation.
+          </li>
+          <li>
+            Each ride map includes several checkpoints to ensure that Google
+            Maps doesn't auto-redirect you away from the original route. If you
+            accidently pass a checkpoint, and find Google Maps is telling you to
+            go backwards, just delete that checkpoint by selecting "Remove stop"
+            from the menu.
+          </li>
+        </ol>
+      </section>
+
+      <section className="mb-6">
+        <h2 className="text-2xl font-semibold mb-4">
+          Advice for Cycling in Toronto
+        </h2>
+        <p></p>
+        <p className="mt-3">
+          In addition to the technical information provided above, we offer the
+          following general advice for utilizing our cycling routes:
+        </p>
+        <ol className="list-decimal list-outside space-y-2 mt-2 ml-4">
+          <li>
+            Always preview your ride's map before leaving your home. Ensure you
+            are familiar with the streets and turns you will encounter during
+            your ride.
+          </li>
+          <li>
+            When making a left, use a{" "}
+            <a
+              className="link"
+              href="https://www.thestar.com/autos/what-s-the-proper-way-to-make-a-left-turn-on-your-bike/article_a29b8338-b478-5465-80b4-dab8b5dc795b.html"
+              aria-label="The Star article on two-stage turns"
+            >
+              two-stage turn
+            </a>
+            . This means to make a left turn by crossing at an intersection,
+            alongside pedestrians. All of the cycling routes on Cycle TO FUN are
+            designed to accommodate two-stage left turns at major intersections.
+          </li>
+          <li>
+            When following one of our cycling routes, never do anything that
+            makes you feel unsafe. If traffic feels too intense or a hill is too
+            steep, do not hesitate to walk your bike on the sidewalk for part of
+            the route.
           </li>
         </ol>
       </section>

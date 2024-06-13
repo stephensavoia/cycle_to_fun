@@ -19,7 +19,7 @@ let rides = [
     title: "St. Lawrence Market to Woodbine Beach Park",
     description:
       "Ride from St. Lawrence Market, along Commissioner St. and the Lakeshore, to Woodbine Beach Park for a delightful picnic. (Note: The market is closed on Mondays.)",
-    mapUrl: "https://maps.app.goo.gl/nnaHsLGpbC4D2a1B9",
+    mapUrl: "https://maps.app.goo.gl/MNtpnpGnt23tB5pa7",
     tags: "St Lawrence Market, Woodbine Beach, Lakeshore, Commissioners, food, picnic, Bike Share, Toronto, Beaches, East End",
     duration: "25min",
     distance: "7km",
@@ -46,7 +46,7 @@ let rides = [
   },
   {
     id: 6,
-    title: "Messini Authentic Gyros to Woodbine Beach Park",
+    title: "Messini to Woodbine Beach Park",
     description:
       "Grab a gyro from Messini Authentic Gyros and head down to Woodbine Beach Park. Despite what Google Maps suggests, you can ride directly from Knox Ave to the Lakeshore bike trail via a short connecting path, avoiding any backtracking.",
     mapUrl: "https://maps.app.goo.gl/K4kGwUr4arJV5nqV6",
@@ -85,7 +85,7 @@ let rides = [
     distance: "15km",
     difficulty: "Moderate",
     routeType: "Cycle Tracks",
-    imageUrl: "/img/test-image.jpg",
+    imageUrl: "/img/planb.jpg",
     altText: "PlanB restaurant front entrance",
     slug: "lalibela-cuisine-to-planb",
   },
@@ -100,7 +100,7 @@ let rides = [
     distance: "4km",
     difficulty: "Easy",
     routeType: "Side Streets",
-    imageUrl: "/img/test-image.jpg",
+    imageUrl: "/img/sorauren-market.jpg",
     altText: "Sorauren Market vendors",
     slug: "sorauren-market-to-trinity-bellwoods",
   },
@@ -115,7 +115,7 @@ let rides = [
     distance: "6 km",
     difficulty: "Easy",
     routeType: "Bike Lanes",
-    imageUrl: "/img/test-image.jpg",
+    imageUrl: "/img/eaton-centre.jpg",
     altText: "Toronto Eaton Centre Trinity Square entrance",
     slug: "dufferin-mall-to-eaton-centre",
   },
@@ -124,7 +124,7 @@ let rides = [
     title: "High Park to Cheese Boutique",
     description:
       "Ride through High Park, along the lake, and up to Cheese Boutique for some fresh, gourmet foods. Before heading back to High Park, stop for a picnic by the lake with all of your delicious finds.",
-    mapUrl: "https://maps.app.goo.gl/kTKRHrLvkibTVqsF9",
+    mapUrl: "https://maps.app.goo.gl/evjGPi3CVH9zMWPm8",
     tags: "High Park, Cheese Boutique, Lake Ontario, food, picnic, Bike Share, Toronto, West End",
     duration: "20min",
     distance: "5km",

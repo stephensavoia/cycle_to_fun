@@ -45,9 +45,17 @@ function Ride({
   return (
     <div className="ride-card w-11/12 mx-auto">
       <div className="card card-compact w-auto mx-auto max-w-[30rem] bg-base-100">
-        <figure className="bg-base-200 relative">
+        <figure
+          className="bg-base-200 relative"
+          style={{
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: "cover",
+            backgroundBlendMode: "multiply",
+            backgroundColor: "rgba(0, 0, 0, 0.25)",
+            height: "252px",
+          }}
+        >
           <h2 className="ride-card-title">{title}</h2>
-          <img src={imageUrl} alt={altText} />
         </figure>
         <div className="flex flex-row justify-start">
           <div className="card-actions flex flex-col justify-start pt-4">
@@ -68,18 +76,18 @@ function Ride({
             </a>
           </div>
           <div className="card-body">
-            <p>{description}</p>
+            <p className="mb-3">{description}</p>
             <p>
-              <span className="badge badge-ghost inline-block mr-2">
+              <span className="badge badge-ghost inline-block mr-2 mb-3">
                 {duration}
               </span>
-              <span className="badge badge-ghost inline-block mr-2">
+              <span className="badge badge-ghost inline-block mr-2 mb-3">
                 {distance}
               </span>
-              <span className="badge badge-ghost badge-success inline-block mr-2">
+              <span className="badge badge-ghost badge-success inline-block mr-2 mb-3">
                 {difficulty}
               </span>
-              <span className="badge badge-ghost inline-block">
+              <span className="badge badge-ghost inline-block mb-3">
                 {routeType}
               </span>
             </p>
