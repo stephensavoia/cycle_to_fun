@@ -4,7 +4,11 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  let results = await context.cloudflare.env.DB.prepare(
+    "SELECT * FROM rides"
+  ).all();
+  console.log(results);
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
 

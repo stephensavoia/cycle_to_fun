@@ -74,7 +74,7 @@ export default function About() {
       </section>
 
       <section className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">How to Google Maps</h2>
+        <h2 className="text-2xl font-semibold mb-4">How to Use Google Maps</h2>
         <p></p>
         <img
           src="/img/how-to-use-google-maps.png"
