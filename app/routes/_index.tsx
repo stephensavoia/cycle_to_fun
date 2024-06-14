@@ -5,11 +5,11 @@ import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  console.log(context);
-  // let results = await context.cloudflare.env.DB.prepare(
-  //   "SELECT * FROM rides"
-  // ).all();
-  // console.log(results);
+  console.log(context.cloudflare.env);
+  let results = await context.cloudflare.env.DB.prepare(
+    "SELECT * FROM rides"
+  ).first();
+  console.log(results);
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
 
@@ -19,7 +19,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   if (page > totalPages) throw new Response("Page not found", { status: 404 });
 
-  return { rides, page, hasNextPage };
+  return { rides, page, hasNextPage, context };
 }
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -49,6 +49,7 @@ export const meta: MetaFunction = ({ matches }) => {
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
+  console.log(data.context);
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
 
