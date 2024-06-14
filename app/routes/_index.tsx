@@ -19,7 +19,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   if (page > totalPages) throw new Response("Page not found", { status: 404 });
 
-  return { rides, page, hasNextPage, context };
+  return { rides, page, hasNextPage, results };
 }
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -49,7 +49,7 @@ export const meta: MetaFunction = ({ matches }) => {
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-  console.log(data.context);
+  console.log(data.results);
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
 
