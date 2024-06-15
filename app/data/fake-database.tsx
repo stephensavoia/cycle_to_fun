@@ -18,7 +18,7 @@ let rides = [
     id: 8,
     title: "St. Lawrence Market to Woodbine Beach Park",
     description:
-      "Ride from St. Lawrence Market, along Commissioner St. and the Lakeshore, to Woodbine Beach Park for a delightful picnic. Make sure to use the Lakeshore Recreational Trail (on the north side of Lakeshore Blvd) until Leslie.",
+      "Ride from St. Lawrence Market, along Commissioner St. and the Lakeshore, to Woodbine Beach Park for a delightful picnic. Make sure to use the Lakeshore Recreational Trail (north side of Lakeshore Blvd) until Leslie.",
     mapUrl: "https://maps.app.goo.gl/jc1rMPQMG29i9u9EA",
     tags: "St Lawrence Market, Woodbine Beach, Lakeshore, Commissioners, food, picnic, Bike Share, Toronto, Beaches, East End",
     duration: "25min",

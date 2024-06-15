@@ -53,6 +53,7 @@ function Ride({
             backgroundBlendMode: "multiply",
             backgroundColor: "rgba(0, 0, 0, 0.25)",
             height: "252px",
+            backgroundPosition: "center",
           }}
         >
           <h2 className="ride-card-title">{title}</h2>
