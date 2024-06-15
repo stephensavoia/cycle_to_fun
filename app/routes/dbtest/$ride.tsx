@@ -3,6 +3,23 @@ import * as database from "~/data/fake-database";
 import { useLoaderData, redirect } from "@remix-run/react";
 import Ride from "~/components/Ride";
 
+// export async function loader({ request, context }: LoaderFunctionArgs) {
+//   console.log(context.cloudflare.env);
+//   let results = await context.cloudflare.env.DB.prepare(
+//     "SELECT * FROM rides"
+//   ).first();
+//   const url = new URL(request.url);
+//   const page = Number(url.searchParams.get("page")) || 1;
+
+//   let rides = database.getRidesByLatest(page, 4);
+//   let totalPages = Math.ceil(database.getRidesCount() / 4);
+//   let hasNextPage = page < totalPages;
+
+//   if (page > totalPages) throw new Response("Page not found", { status: 404 });
+
+//   return { rides, page, hasNextPage, results };
+// }
+
 export async function loader({ params }: LoaderFunctionArgs) {
   const { ride } = params;
   if (ride === undefined) throw new Response("Ride is undefined");

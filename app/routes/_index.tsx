@@ -4,11 +4,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 
-export async function loader({ request, context }: LoaderFunctionArgs) {
-  console.log(context.cloudflare.env);
-  let results = await context.cloudflare.env.DB.prepare(
-    "SELECT * FROM rides"
-  ).first();
+export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const page = Number(url.searchParams.get("page")) || 1;
 
@@ -18,7 +14,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   if (page > totalPages) throw new Response("Page not found", { status: 404 });
 
-  return { rides, page, hasNextPage, results };
+  return { rides, page, hasNextPage };
 }
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -41,14 +37,13 @@ export const meta: MetaFunction = ({ matches }) => {
     },
     {
       name: "og:image",
-      content: "https://www.cycletofun.com/img/test-img.jpg",
+      content: "https://www.cycletofun.com/img/og-image.jpg",
     },
   ];
 };
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-  console.log(data.results);
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
 

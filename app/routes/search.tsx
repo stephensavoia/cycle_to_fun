@@ -43,7 +43,7 @@ export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
     },
     {
       name: "og:image",
-      content: "https://www.cycletofun.com/img/test-img.jpg",
+      content: "https://www.cycletofun.com/img/og-image.jpg",
     },
   ];
 };

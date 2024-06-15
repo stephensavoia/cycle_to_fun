@@ -20,7 +20,7 @@ export const meta: MetaFunction = ({ matches }) => {
     },
     {
       name: "og:image",
-      content: "https://www.cycletofun.com/img/test-img.jpg",
+      content: "https://www.cycletofun.com/img/og-image.jpg",
     },
   ];
 };
