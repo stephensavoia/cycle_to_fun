@@ -1,12 +1,18 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
 import * as database from "~/data/fake-database";
-import { useLoaderData, redirect } from "@remix-run/react";
+import { useLoaderData, redirect, json } from "@remix-run/react";
 import Ride from "~/components/Ride";
 
-export async function loader({ context }: LoaderFunctionArgs) {
-  const data = context.cloudflare.env.DB;
+interface Env {
+  DB: D1Database;
+}
 
-  return data;
+export async function loader({ context }: LoaderFunctionArgs) {
+  let env = context.cloudflare.env as Env;
+
+  let { results } = await env.DB.prepare("SELECT * FROM rides LIMIT 5").all();
+
+  return json(results);
 }
 
 export default function RideBySlug() {
