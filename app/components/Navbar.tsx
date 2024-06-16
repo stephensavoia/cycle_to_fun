@@ -141,7 +141,7 @@ const Navbar: React.FC<SearchInputProps> = ({
             <Link to="/">
               <img
                 className="logo"
-                src="./img/logo.png"
+                src="/img/logo.png"
                 alt="Cycle TO Fun logo"
               />
             </Link>

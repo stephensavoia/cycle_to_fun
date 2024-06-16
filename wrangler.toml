@@ -1,9 +1,0 @@
-name = "cycle-to-fun"
-compatibility_date = "2024-06-11"
-main = "./app/routes/_index.tsx"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "rides"
-database_id = "c3e74721-deea-4d5f-bb52-21467f7391a1"
-preview_database_id = "DB"

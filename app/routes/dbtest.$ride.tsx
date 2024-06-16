@@ -20,7 +20,9 @@ import Ride from "~/components/Ride";
 //   return { rides, page, hasNextPage, results };
 // }
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  console.log(context);
+  console.log(params);
   const { ride } = params;
   if (ride === undefined) throw new Response("Ride is undefined");
 

@@ -1,5 +1,5 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import * as database from "../data/fake-database";
+import * as database from "~/data/fake-database";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";

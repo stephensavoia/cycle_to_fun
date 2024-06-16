@@ -20,7 +20,7 @@ const Footer: React.FC<SearchInputProps> = ({
       <aside>
         <img
           className="logo"
-          src="./img/footer-logo.png"
+          src="/img/footer-logo.png"
           alt="Cycle TO Fun logo"
         />
       </aside>
