@@ -3,17 +3,28 @@ import * as database from "~/data/fake-database";
 import { useLoaderData, redirect } from "@remix-run/react";
 import Ride from "~/components/Ride";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, context }: LoaderFunctionArgs) {
+  const env = context.cloudflare.env as Env;
   const { ride } = params;
   if (ride === undefined) throw new Response("Ride is undefined");
 
   if (ride === "random") {
-    const randomRide = database.getRandomRideSlug();
+    let { results } = await env.DB.prepare(
+      "SELECT slug FROM rides ORDER BY RANDOM() LIMIT 1;"
+    ).all();
+    console.log(results);
+    const randomRide = results[0].slug;
     return redirect(`/${randomRide}`);
   }
 
-  const data = database.getRideBySlug(ride);
+  let { results } = await env.DB.prepare("SELECT * FROM rides WHERE slug = ?;")
+    .bind(`${ride}`)
+    .all();
+
+  const data = results[0];
+
   if (!data) throw new Response("Ride not found", { status: 404 });
+
   return data;
 }
 
@@ -43,7 +54,7 @@ export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
 };
 
 export default function RideBySlug() {
-  const data = useLoaderData<typeof loader>();
+  const data = useLoaderData<database.RidesArray>();
 
   return (
     <div className="main-container ride-page-container">
