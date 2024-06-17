@@ -14,13 +14,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   console.log(query);
   console.log(lastRideId);
   let statement = env.DB.prepare(
-    `SELECT * FROM rides WHERE LOWER(tags) LIKE ? ${queryModifier} ORDER BY id DESC LIMIT 5;`
+    `SELECT * FROM rides WHERE REPLACE(LOWER(tags), ',', ' ') LIKE ? ${queryModifier} ORDER BY id DESC LIMIT 5;`
   );
 
   if (lastRideId) {
-    statement = statement.bind(`%${query}%`, lastRideId);
+    statement = statement.bind(`% ${query} %`, lastRideId);
   } else {
-    statement = statement.bind(`%${query}%`);
+    statement = statement.bind(`% ${query} %`);
   }
 
   let { results }: { results: RidesArray[] } = await statement.all();
