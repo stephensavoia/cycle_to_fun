@@ -12,7 +12,6 @@ export async function loader({ params, context }: LoaderFunctionArgs) {
     let { results } = await env.DB.prepare(
       "SELECT slug FROM rides ORDER BY RANDOM() LIMIT 1;"
     ).all();
-    console.log(results);
     const randomRide = results[0].slug;
     return redirect(`/${randomRide}`);
   }

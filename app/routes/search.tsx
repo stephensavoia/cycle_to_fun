@@ -11,8 +11,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   const env = context.cloudflare.env as Env;
   let queryModifier = lastRideId ? `AND id < ?` : "";
-  console.log(query);
-  console.log(lastRideId);
   let statement = env.DB.prepare(
     `SELECT * FROM rides WHERE REPLACE(LOWER(tags), ',', ' ') LIKE ? ${queryModifier} ORDER BY id DESC LIMIT 5;`
   );
@@ -25,12 +23,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   let { results }: { results: RidesArray[] } = await statement.all();
 
-  console.log(results);
-
   const rides: RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
   lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
-  console.log(lastRideId);
 
   if (!rides) throw new Response("Page not found", { status: 404 });
 
