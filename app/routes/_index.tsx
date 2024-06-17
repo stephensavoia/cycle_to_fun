@@ -9,15 +9,20 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
 
   const env = context.cloudflare.env as Env;
-  console.log(lastRideId);
-  let queryModifier = lastRideId ? `WHERE ID < ${lastRideId}` : "";
-  let { results }: { results: database.RidesArray[] } = await env.DB.prepare(
-    `SELECT * FROM rides ${queryModifier} ORDER BY ID DESC LIMIT 5;`
-  ).all();
+  let queryModifier = lastRideId ? `WHERE id < ?` : "";
+  let statement = env.DB.prepare(
+    `SELECT * FROM rides ${queryModifier} ORDER BY id DESC LIMIT 5;`
+  );
+
+  if (lastRideId) {
+    statement = statement.bind(lastRideId);
+  }
+
+  let { results }: { results: database.RidesArray[] } = await statement.all();
 
   const rides: database.RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
-  lastRideId = rides[rides.length - 1].id;
+  lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
 
   if (!rides || rides.length === 0)
     throw new Response("Page not found", { status: 404 });

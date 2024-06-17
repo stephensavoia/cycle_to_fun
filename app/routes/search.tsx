@@ -10,20 +10,29 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
 
   const env = context.cloudflare.env as Env;
-  let queryModifier = lastRideId ? `AND ID < ${lastRideId}` : "";
+  let queryModifier = lastRideId ? `AND id < ?` : "";
   console.log(query);
   console.log(lastRideId);
-  let { results }: { results: database.RidesArray[] } = await env.DB.prepare(
-    `SELECT * FROM rides WHERE LOWER(tags) LIKE '%${query}%' ${queryModifier} ORDER BY id DESC LIMIT 5;`
-  ).all();
+  let statement = env.DB.prepare(
+    `SELECT * FROM rides WHERE LOWER(tags) LIKE ? ${queryModifier} ORDER BY id DESC LIMIT 5;`
+  );
+
+  if (lastRideId) {
+    statement = statement.bind(`%${query}%`, lastRideId);
+  } else {
+    statement = statement.bind(`%${query}%`);
+  }
+
+  let { results }: { results: database.RidesArray[] } = await statement.all();
+
+  console.log(results);
 
   const rides: database.RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
-  lastRideId = rides[rides.length - 1].id;
+  lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
   console.log(lastRideId);
 
-  if (!rides || rides.length === 0)
-    throw new Response("Page not found", { status: 404 });
+  if (!rides) throw new Response("Page not found", { status: 404 });
 
   return { rides, lastRideId, hasNextPage, query };
 }
