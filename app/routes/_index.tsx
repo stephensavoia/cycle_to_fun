@@ -4,17 +4,24 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
-  const page = Number(url.searchParams.get("page")) || 1;
+  let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
 
-  let rides = database.getRidesByLatest(page, 4);
-  let totalPages = Math.ceil(database.getRidesCount() / 4);
-  let hasNextPage = page < totalPages;
+  const env = context.cloudflare.env as Env;
+  let queryModifier = lastRideId ? `WHERE ID < ${lastRideId}` : "";
+  let { results }: { results: database.RidesArray[] } = await env.DB.prepare(
+    `SELECT * FROM rides ${queryModifier} ORDER BY ID DESC LIMIT 5;`
+  ).all();
 
-  if (page > totalPages) throw new Response("Page not found", { status: 404 });
+  const rides: database.RidesArray[] = results.slice(0, 4);
+  const hasNextPage = results.length > 4;
+  lastRideId = rides[rides.length - 1].id;
 
-  return { rides, page, hasNextPage };
+  if (!rides || rides.length === 0)
+    throw new Response("Page not found", { status: 404 });
+
+  return { rides, lastRideId, hasNextPage };
 }
 
 export const meta: MetaFunction = ({ matches }) => {
@@ -48,12 +55,11 @@ export default function Index() {
   const [pageLoading, setPageLoading] = useState(true);
 
   const [rides, setRides] = useState(data.rides);
-  const [page, setPage] = useState(data.page + 1);
+  const [lastRideId, setLastRideId] = useState(data.lastRideId);
   const [hasNextPage, setHasNextPage] = useState(data.hasNextPage);
 
   function loadMore() {
-    fetcher.load(`?index&page=${page}`);
-    setPage(page + 1);
+    fetcher.load(`?index&lastRideId=${lastRideId}`);
   }
 
   // When page has loaded
@@ -70,6 +76,7 @@ export default function Index() {
     if (newData) {
       setRides((prevRides) => [...prevRides, ...newData.rides]);
       setHasNextPage(newData.hasNextPage);
+      setLastRideId(newData.lastRideId);
     }
   }, [fetcher.data]);
 
