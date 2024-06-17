@@ -9,6 +9,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
 
   const env = context.cloudflare.env as Env;
+  console.log(lastRideId);
   let queryModifier = lastRideId ? `WHERE ID < ${lastRideId}` : "";
   let { results }: { results: database.RidesArray[] } = await env.DB.prepare(
     `SELECT * FROM rides ${queryModifier} ORDER BY ID DESC LIMIT 5;`

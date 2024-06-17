@@ -4,19 +4,28 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const query = url.searchParams.get("q") || "";
-  const page = Number(url.searchParams.get("page")) || 1;
+  let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
 
-  let rides = database.getRidesBySearch(query, page, 4);
-  let totalPages = Math.ceil(database.getRidesCountBySearch(query) / 4);
-  let hasNextPage = page < totalPages;
+  const env = context.cloudflare.env as Env;
+  let queryModifier = lastRideId ? `AND ID < ${lastRideId}` : "";
+  console.log(query);
+  console.log(lastRideId);
+  let { results }: { results: database.RidesArray[] } = await env.DB.prepare(
+    `SELECT * FROM rides WHERE LOWER(tags) LIKE '%${query}%' ${queryModifier} ORDER BY id DESC LIMIT 5;`
+  ).all();
 
-  if (page > totalPages && page > 1)
+  const rides: database.RidesArray[] = results.slice(0, 4);
+  const hasNextPage = results.length > 4;
+  lastRideId = rides[rides.length - 1].id;
+  console.log(lastRideId);
+
+  if (!rides || rides.length === 0)
     throw new Response("Page not found", { status: 404 });
 
-  return { rides, page, hasNextPage, query };
+  return { rides, lastRideId, hasNextPage, query };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
@@ -54,12 +63,12 @@ export default function Index() {
   const [pageLoading, setPageLoading] = useState(true);
 
   const [rides, setRides] = useState(data.rides);
-  const [page, setPage] = useState(data.page + 1);
+  const [lastRideId, setLastRideId] = useState(data.lastRideId);
   const [hasNextPage, setHasNextPage] = useState(data.hasNextPage);
 
   function loadMore() {
-    fetcher.load(`?index&q=${data.query}&page=${page}`);
-    setPage(page + 1);
+    fetcher.load(`?index&q=${data.query}&lastRideId=${lastRideId}`);
+    setLastRideId(lastRideId);
   }
 
   // When page has loaded
@@ -81,7 +90,7 @@ export default function Index() {
 
   useEffect(() => {
     setRides(data.rides);
-    setPage(data.page + 1);
+    setLastRideId(data.lastRideId);
     setHasNextPage(data.hasNextPage);
   }, [data.rides]);
 
