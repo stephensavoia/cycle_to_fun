@@ -1,5 +1,5 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import * as database from "~/data/fake-database";
+import { RidesArray } from "~/types";
 import { useLoaderData, redirect } from "@remix-run/react";
 import Ride from "~/components/Ride";
 
@@ -54,7 +54,7 @@ export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
 };
 
 export default function RideBySlug() {
-  const data = useLoaderData<database.RidesArray>();
+  const data = useLoaderData<RidesArray>();
 
   return (
     <div className="main-container ride-page-container">

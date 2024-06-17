@@ -1,5 +1,5 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import * as database from "~/data/fake-database";
+import { RidesArray } from "~/types";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
@@ -18,9 +18,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     statement = statement.bind(lastRideId);
   }
 
-  let { results }: { results: database.RidesArray[] } = await statement.all();
+  let { results }: { results: RidesArray[] } = await statement.all();
 
-  const rides: database.RidesArray[] = results.slice(0, 4);
+  const rides: RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
   lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
 
