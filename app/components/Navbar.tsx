@@ -154,6 +154,9 @@ const Navbar: React.FC<SearchInputProps> = ({
               <li>
                 <Link to="/about">ABOUT</Link>
               </li>
+              <li>
+                <Link to="/signup">SIGN UP</Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -222,6 +225,11 @@ const Navbar: React.FC<SearchInputProps> = ({
           <li>
             <Link to="/about" onClick={closeDrawer}>
               ABOUT
+            </Link>
+          </li>
+          <li>
+            <Link to="/signup" onClick={closeDrawer}>
+              SIGN UP
             </Link>
           </li>
         </ul>

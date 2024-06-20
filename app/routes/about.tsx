@@ -28,7 +28,7 @@ export const meta: MetaFunction = ({ matches }) => {
 export default function About() {
   return (
     <div className="main-container max-w-[480px] mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">About</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">About</h1>
 
       <section className="mb-6">
         <p>
