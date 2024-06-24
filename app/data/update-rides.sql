@@ -1,18 +1,3 @@
-CREATE TABLE IF NOT EXISTS rides (
-    id INT PRIMARY KEY,
-    title VARCHAR(255),
-    description TEXT,
-    mapUrl VARCHAR(255),
-    tags TEXT,
-    duration VARCHAR(50),
-    distance VARCHAR(50),
-    difficulty VARCHAR(50),
-    routeType VARCHAR(50),
-    imageUrl VARCHAR(255),
-    altText VARCHAR(255),
-    slug VARCHAR(255)
-);
-
 INSERT INTO rides (id, title, description, mapUrl, tags, duration, distance, difficulty, routeType, imageUrl, altText, slug) VALUES
 (8, 'St. Lawrence Market to Woodbine Beach Park', 'Ride from St. Lawrence Market, along Commissioner St. and the Lakeshore, to Woodbine Beach Park for a delightful picnic. Make sure to ride on the trail on north side of Lakeshore until Leslie St., rather than next to traffic.', 'https://maps.app.goo.gl/RFjCtKpwVh18tk9V6', 'St Lawrence Market, Woodbine Beach, Lakeshore, Commissioners, food, picnic, Bike Share, Toronto, Beaches, East End', '25min', '7km', 'Easy', 'Cycle Tracks', '/img/st-lawrence-market.jpg', 'St. Lawrence Market', 'st-lawrence-market-to-woodbine-beach'),
 (7, 'Casa Loma to Distillery District', 'Enjoy an easy, downhill ride from Casa Loma, through the University of Toronto, along College and Sherbourne Streets, and ending at the Distillery District for a refreshing beer.', 'https://maps.app.goo.gl/Uo9DvztkUBjh7iBG6', 'Casa Loma, Distillery, U of T, Corktown, Bike Share, Toronto', '30min', '7km', 'Easy', 'Bike Lanes', '/img/distillery-district.jpg', 'Distillery District', 'casa-loma-to-distillery-district'),
@@ -34,37 +19,3 @@ routeType = EXCLUDED.routeType,
 imageUrl = EXCLUDED.imageUrl,
 altText = EXCLUDED.altText,
 slug = EXCLUDED.slug;
-
-CREATE TABLE IF NOT EXISTS users (
-    UserID INT PRIMARY KEY AUTOINCREMENT,
-    Username VARCHAR(255) NOT NULL,
-    Email VARCHAR(255) UNIQUE NOT NULL,
-    Salt CHAR(32) NOT NULL,
-    PasswordHash CHAR(64) NOT NULL,
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-INSERT INTO users (Username, Email, Salt, PasswordHash)
-VALUES ('john_doe', 'john@example.com', 'ba5809ff1699587d1732223c20e', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd4d5ed3b6ff6d6e6b5'),
-('Stephen', 'ssavoia@gmail.com', 'ba5809ff1699587d1732223c20e', '5d1e5433d2077d07cac594e1c0ae132e91e4429acb8210c5853d0ee23fea6f243d5ba8432a8da54e3148dea06d69e8a8b8980529c7')
-ON CONFLICT (Email) DO UPDATE SET
-Username = EXCLUDED.Username;
-
-
-CREATE TABLE IF NOT EXISTS user_likes (
-    UserID INT,
-    RideID INT,
-    PRIMARY KEY (UserID, RideID),
-    FOREIGN KEY (UserID) REFERENCES users(UserID),
-    FOREIGN KEY (RideID) REFERENCES rides(id)
-);
-
-INSERT INTO user_likes (UserID, RideID)
-VALUES 
-(1, 2),
-(1, 3),
-(9, 5),
-(7,1),
-(7,4),
-(9,6)
-ON CONFLICT (UserID, RideID) DO NOTHING;

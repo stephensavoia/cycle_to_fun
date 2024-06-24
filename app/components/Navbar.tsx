@@ -1,10 +1,11 @@
 import { Form, Link, useLocation, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { SearchInputProps } from "~/root";
+import { NavbarProps } from "~/root";
+import { useUser } from "~/contexts/UserContext";
 
 import React from "react";
 
-const Navbar: React.FC<SearchInputProps> = ({
+const Navbar: React.FC<NavbarProps> = ({
   mobileSearchInput,
   desktopSearchInput,
   drawerMenu,
@@ -14,6 +15,8 @@ const Navbar: React.FC<SearchInputProps> = ({
   const [searchParams] = useSearchParams();
   const searchInputValue = searchParams.get("q") || "";
   const location = useLocation();
+
+  const { username } = useUser();
 
   useEffect(() => {
     if (!location.pathname.includes("/search")) {
@@ -148,15 +151,31 @@ const Navbar: React.FC<SearchInputProps> = ({
           </div>
           <div className="hidden lg:block text-right">
             <ul className="menu menu-horizontal items-center">
+              {username && (
+                <li>
+                  <Link to="/my-rides" onClick={(e) => e.currentTarget.blur()}>
+                    MY RIDES
+                  </Link>
+                </li>
+              )}
               <li>
-                <Link to="/random">RANDOM RIDE</Link>
+                <Link to="/random" onClick={(e) => e.currentTarget.blur()}>
+                  RANDOM RIDE
+                </Link>
               </li>
-              <li>
-                <Link to="/about">ABOUT</Link>
-              </li>
-              <li>
-                <Link to="/signup">SIGN UP</Link>
-              </li>
+              {username ? (
+                <li>
+                  <Link to="/logout" onClick={(e) => e.currentTarget.blur()}>
+                    LOG OUT
+                  </Link>
+                </li>
+              ) : (
+                <li>
+                  <Link to="/login" onClick={(e) => e.currentTarget.blur()}>
+                    LOG IN
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -217,21 +236,31 @@ const Navbar: React.FC<SearchInputProps> = ({
               </label>
             </Form>
           </li>
+          {username && (
+            <li>
+              <Link to="/my-rides" onClick={closeDrawer}>
+                MY RIDES
+              </Link>
+            </li>
+          )}
           <li>
             <Link to="/random" onClick={closeDrawer}>
               RANDOM RIDE
             </Link>
           </li>
-          <li>
-            <Link to="/about" onClick={closeDrawer}>
-              ABOUT
-            </Link>
-          </li>
-          <li>
-            <Link to="/signup" onClick={closeDrawer}>
-              SIGN UP
-            </Link>
-          </li>
+          {username ? (
+            <li>
+              <Link to="/logout" onClick={closeDrawer}>
+                LOG OUT
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link to="/login" onClick={closeDrawer}>
+                LOG IN
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </div>

@@ -4,58 +4,56 @@ import { Form, Link, useActionData } from "@remix-run/react";
 import { Label, Input } from "~/components/forms/input";
 import { Button } from "~/components/forms/button";
 
+import { setAuthOnResponse, redirectIfLoggedInLoader } from "~/auth/auth";
 import { validate } from "./validate";
+import { login } from "./queries";
 
 export const meta = () => {
-  return [{ title: "Trellix Signup" }];
+  return [{ title: "Create an Account | Cycle TO Fun" }];
 };
 
-export async function action({ request }: ActionFunctionArgs) {
+export const loader = redirectIfLoggedInLoader;
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const env = context.cloudflare.env as Env;
   let formData = await request.formData();
 
-  let username = String(formData.get("username") || "");
   let email = String(formData.get("email") || "");
   let password = String(formData.get("password") || "");
 
-  let errors = await validate(username, email, password);
+  let errors = await validate(email, password);
   if (errors) {
     return json({ ok: false, errors }, 400);
   }
-  return null;
+
+  let userid = await login(env, email, password);
+
+  if (!userid) {
+    return json(
+      { ok: false, errors: { password: "Invalid email or password" } },
+      400
+    );
+  } else {
+    return setAuthOnResponse(redirect("/"), userid);
+  }
 }
 
-export default function Signup() {
-  let actionResult = useActionData<typeof action>();
+// Had to add this because typescript is too stupid to understand what a "?" means
+type ActionResult = {
+  errors?: {
+    username?: string;
+    email?: string;
+    password?: string;
+  };
+};
+
+export default function CreateAccount() {
+  let actionResult = useActionData<ActionResult>();
 
   return (
     <div className="main-container max-w-[480px] mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Sign Up</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Log In</h1>
       <Form method="post">
-        <Label htmlFor="username" className="grow">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="w-4 h-4 opacity-70"
-          >
-            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-          </svg>
-          <Input
-            autoFocus
-            id="username"
-            name="username"
-            type="username"
-            autoComplete="username"
-            placeholder="Username"
-            required
-          />
-        </Label>
-        <span
-          id="usernameError"
-          className="label label-text-alt pt-1 pb-4 text-error"
-        >
-          {actionResult?.errors?.username && actionResult.errors.username}
-        </span>
         <Label htmlFor="email">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -67,17 +65,17 @@ export default function Signup() {
             <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
           </svg>
           <Input
-            autoFocus
             id="email"
             name="email"
             type="email"
             autoComplete="email"
+            aria-describedby="email-error"
             placeholder="Email"
             required
           />
         </Label>
         <span
-          id="emailError"
+          id="email-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.email && actionResult.errors.email}
@@ -106,18 +104,17 @@ export default function Signup() {
           />
         </Label>
         <span
-          id="passwordError"
+          id="password-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.password && actionResult.errors.password}
         </span>
-        <Button type="submit">SIGN UP</Button>
+        <Button type="submit">LOG IN</Button>
         <div className="opacity-80 mt-3">
-          Already have an account?{" "}
-          <Link className="link mt-1" to="/login">
-            Log in
+          Don't have an account?{" "}
+          <Link className="link mt-1" to="/create-account">
+            Create Account
           </Link>
-          .
         </div>
       </Form>
     </div>

@@ -11,4 +11,5 @@ export type RidesArray = {
   imageUrl: string;
   altText: string;
   slug: string;
+  rideLiked: boolean;
 };

@@ -1,4 +1,9 @@
+import { Form } from "@remix-run/react";
+import { useState } from "react";
+import { useUser } from "~/contexts/UserContext";
+
 interface RideProps {
+  rideId: number;
   title: string;
   description: string;
   mapUrl: string;
@@ -10,9 +15,15 @@ interface RideProps {
   imageUrl: string;
   altText: string;
   slug: string;
+  rideLiked: boolean;
+}
+
+interface LikeResponse {
+  success: boolean;
 }
 
 function Ride({
+  rideId,
   title,
   description,
   mapUrl,
@@ -24,7 +35,10 @@ function Ride({
   imageUrl,
   altText,
   slug,
+  rideLiked,
 }: RideProps) {
+  let { userId, username } = useUser();
+
   const handleShare = async () => {
     const navigator = window.navigator;
     if (navigator.share) {
@@ -69,12 +83,21 @@ function Ride({
             >
               Share
             </button>
-            <a
-              role="button"
-              className="hidden btn btn-outline btn-primary btn-extra"
-            >
-              Like
-            </a>
+            {userId && (
+              <Form method="post" navigate={false} className="w-full">
+                <input type="hidden" name="userId" value={userId} />
+                <input type="hidden" name="rideId" value={rideId} />
+                <button
+                  type="submit"
+                  className={`btn btn-outline btn-primary btn-extra ${
+                    rideLiked ? "bg-red-500" : ""
+                  }`}
+                >
+                  Like
+                </button>
+                {rideLiked}
+              </Form>
+            )}
           </div>
           <div className="card-body">
             <p className="mb-3">{description}</p>

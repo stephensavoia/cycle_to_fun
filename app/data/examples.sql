@@ -21,3 +21,9 @@ SELECT * FROM rides WHERE LOWER(tags) LIKE '%' || :search || '%' ORDER BY id DES
 -- Corresponds to getRidesCountBySearch(search)
 -- Replace :search with your actual value
 SELECT COUNT(*) FROM rides WHERE LOWER(tags) LIKE '%' || :search || '%';
+
+
+-- Add new user
+INSERT INTO users (Username, Email, PasswordHash)
+VALUES ('john_doe', 'john@example.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd4d5ed3b6ff6d6e6b5');
+

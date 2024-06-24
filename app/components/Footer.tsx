@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
-import { SearchInputProps } from "~/root";
+import { FooterProps } from "~/root";
 
-const Footer: React.FC<SearchInputProps> = ({
+const Footer: React.FC<FooterProps> = ({
   mobileSearchInput,
   desktopSearchInput,
   drawerMenu,

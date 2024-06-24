@@ -4,39 +4,41 @@ import type {
   ActionFunctionArgs,
 } from "@remix-run/cloudflare";
 import { RidesArray } from "~/types";
-import { json, useFetcher, useLoaderData } from "@remix-run/react";
+import { json, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 import { getAuthFromRequest } from "~/auth/auth";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   let userId = await getAuthFromRequest(request);
-
   const url = new URL(request.url);
-  const query = url.searchParams.get("q") || "";
   let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
+  console.log("lastRideId Loader", lastRideId);
 
   const env = context.cloudflare.env as Env;
-  let queryModifier = lastRideId ? `AND id < ?` : "";
-  let statement = env.DB.prepare(
-    `SELECT * FROM rides WHERE (REPLACE(LOWER(tags), ',', ' ') LIKE ? OR REPLACE(LOWER(tags), ',', ' ') LIKE ? OR REPLACE(LOWER(tags), ',', ' ') LIKE ? OR REPLACE(LOWER(tags), ',', ' ') = ?) ${queryModifier} ORDER BY id DESC LIMIT 5;`
-  );
+  let queryModifier = lastRideId ? `WHERE r.id < ?` : "";
 
-  if (lastRideId) {
-    statement = statement.bind(
-      `% ${query}`,
-      `% ${query} %`,
-      `${query} %`,
-      `${query}`,
-      lastRideId
-    );
+  let statement = env.DB.prepare(`
+    SELECT r.*, 
+           CASE 
+             WHEN ul.rideId IS NOT NULL THEN 1 
+             ELSE 0 
+           END as rideLiked
+    FROM rides r
+    LEFT JOIN user_likes ul ON r.id = ul.RideID AND ul.UserID = ?
+    ${queryModifier}
+    ORDER BY r.id DESC
+    LIMIT 5;
+  `);
+
+  if (userId && lastRideId) {
+    statement = statement.bind(userId, lastRideId);
+  } else if (userId && !lastRideId) {
+    statement = statement.bind(userId);
+  } else if (lastRideId) {
+    statement = statement.bind("0", lastRideId);
   } else {
-    statement = statement.bind(
-      `% ${query}`,
-      `% ${query} %`,
-      `${query} %`,
-      `${query}`
-    );
+    statement = statement.bind("0");
   }
 
   let { results }: { results: RidesArray[] } = await statement.all();
@@ -46,39 +48,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
   console.log("newLastRideId Loader", lastRideId);
 
-  if (!rides) throw new Response("Page not found", { status: 404 });
+  if (!rides || rides.length === 0)
+    throw new Response("Page not found", { status: 404 });
 
-  return { rides, lastRideId, hasNextPage, query };
+  return { rides, lastRideId, hasNextPage };
 }
-
-export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
-  const parentMeta = matches.flatMap((match) => match.meta ?? []);
-  const metaTitle =
-    data?.query != ""
-      ? `Search for "${data?.query}" | Cycle TO Fun`
-      : "Search | Cycle TO Fun";
-  return [
-    ...parentMeta,
-    { title: metaTitle },
-    {
-      name: "description",
-      content:
-        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
-    },
-    { name: "og:url", content: "https://www.cycletofun.com/privacy-policy" },
-    { name: "og:type", content: "website" },
-    { name: "og:title", content: metaTitle },
-    {
-      name: "og:description",
-      content:
-        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
-    },
-    {
-      name: "og:image",
-      content: "https://www.cycletofun.com/img/og-image.jpg",
-    },
-  ];
-};
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
   const env = context.cloudflare.env as Env;
@@ -122,18 +96,45 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
   }
 };
 
+export const meta: MetaFunction = ({ matches }) => {
+  const parentMeta = matches.flatMap((match) => match.meta ?? []);
+  return [
+    ...parentMeta,
+    { title: "Cycle TO Fun" },
+    {
+      name: "description",
+      content:
+        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
+    },
+    { name: "og:url", content: "https://www.cycletofun.com/" },
+    { name: "og:type", content: "website" },
+    { name: "og:title", content: "Cycle TO Fun" },
+    {
+      name: "og:description",
+      content:
+        "Our mission is to make cycling in Toronto as safe, accessible, and FUN as possible. Explore our collection of cycling routes and find the perfect one for your next adventure.",
+    },
+    {
+      name: "og:image",
+      content: "https://www.cycletofun.com/img/og-image.jpg",
+    },
+  ];
+};
+
 export default function Index() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
+  const location = useLocation();
+  console.log(location);
 
   const [rides, setRides] = useState(data.rides);
   const [lastRideId, setLastRideId] = useState(data.lastRideId);
   const [hasNextPage, setHasNextPage] = useState(data.hasNextPage);
+  console.log("lastRideId Index", lastRideId);
 
   function loadMore() {
-    fetcher.load(`?index&q=${data.query}&lastRideId=${lastRideId}`);
-    setLastRideId(lastRideId);
+    fetcher.load(`?index&lastRideId=${lastRideId}`);
   }
 
   // When page has loaded
@@ -150,22 +151,14 @@ export default function Index() {
     if (newData) {
       setRides((prevRides) => [...prevRides, ...newData.rides]);
       setHasNextPage(newData.hasNextPage);
+      setLastRideId(newData.lastRideId);
+      console.log("newLastRideId Index", newData.lastRideId);
     }
   }, [fetcher.data]);
-
-  useEffect(() => {
-    setRides(data.rides);
-    setLastRideId(data.lastRideId);
-    setHasNextPage(data.hasNextPage);
-  }, [data.rides]);
 
   return (
     <div className="main-container">
       <div className="flex flex-col items-center">
-        <h1 className="text-2xl font-semibold mt-0.5 mb-1">
-          {rides.length === 0 ? "No results found for:" : "Search results for:"}
-        </h1>
-        <h2 className="text-2xl font-semibold mb-4">"{data.query}"</h2>
         {rides.map((ride) => (
           <Ride
             rideId={ride.id}

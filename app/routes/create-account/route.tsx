@@ -4,36 +4,44 @@ import { Form, Link, useActionData } from "@remix-run/react";
 import { Label, Input } from "~/components/forms/input";
 import { Button } from "~/components/forms/button";
 
+import { setAuthOnResponse, redirectIfLoggedInLoader } from "~/auth/auth";
 import { validate } from "./validate";
-import { createAccount, cookie } from "~/auth/auth";
+import { createAccount } from "./queries";
 
 export const meta = () => {
   return [{ title: "Create an Account | Cycle TO Fun" }];
 };
 
-export async function action({ request }: ActionFunctionArgs) {
+export const loader = redirectIfLoggedInLoader;
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const env = context.cloudflare.env as Env;
   let formData = await request.formData();
 
   let username = String(formData.get("username") || "");
   let email = String(formData.get("email") || "");
   let password = String(formData.get("password") || "");
 
-  let errors = await validate(username, email, password);
+  let errors = await validate(env, username, email, password);
   if (errors) {
     return json({ ok: false, errors }, 400);
   }
 
-  let user = await createAccount(username, email, password);
-
-  return redirect("/", {
-    headers: {
-      "Set-Cookie": await cookie.serialize(user.id),
-    },
-  });
+  let userid = await createAccount(env, username, email, password);
+  return setAuthOnResponse(redirect("/"), userid);
 }
 
+// Had to add this because typescript is too stupid to understand what a "?" means
+type ActionResult = {
+  errors?: {
+    username?: string;
+    email?: string;
+    password?: string;
+  };
+};
+
 export default function CreateAccount() {
-  let actionResult = useActionData<typeof action>();
+  let actionResult = useActionData<ActionResult>();
 
   return (
     <div className="main-container max-w-[480px] mx-auto p-6">
@@ -52,14 +60,15 @@ export default function CreateAccount() {
             autoFocus
             id="username"
             name="username"
-            type="username"
+            type="text"
             autoComplete="username"
+            aria-describedby="username-error"
             placeholder="Username"
             required
           />
         </Label>
         <span
-          id="usernameError"
+          id="username-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.username && actionResult.errors.username}
@@ -75,17 +84,17 @@ export default function CreateAccount() {
             <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
           </svg>
           <Input
-            autoFocus
             id="email"
             name="email"
             type="email"
             autoComplete="email"
+            aria-describedby="email-error"
             placeholder="Email"
             required
           />
         </Label>
         <span
-          id="emailError"
+          id="email-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.email && actionResult.errors.email}
@@ -114,7 +123,7 @@ export default function CreateAccount() {
           />
         </Label>
         <span
-          id="passwordError"
+          id="password-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.password && actionResult.errors.password}
@@ -125,7 +134,6 @@ export default function CreateAccount() {
           <Link className="link mt-1" to="/login">
             Log in
           </Link>
-          .
         </div>
       </Form>
     </div>

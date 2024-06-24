@@ -13,8 +13,9 @@ import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
 import stylesheet from "~/tailwind.css?url";
 import React, { useRef } from "react";
-import { cookie } from "./auth/auth";
+import { getAuthFromRequest } from "./auth/auth";
 import { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { UserProvider } from "~/contexts/UserContext";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -31,10 +32,19 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  let cookieString = request.headers.get("Cookie");
-  let userId = await cookie.parse(cookieString || "");
-  return { userId };
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  let auth = await getAuthFromRequest(request);
+  if (auth) {
+    const env = context.cloudflare.env as Env;
+    let { results } = await env.DB.prepare(
+      "SELECT UserID, Username FROM users WHERE UserID = ?;"
+    )
+      .bind(auth)
+      .all();
+    return results[0];
+  } else {
+    return null;
+  }
 }
 
 export const meta: MetaFunction = () => {
@@ -50,19 +60,28 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export type SearchInputProps = {
+export type NavbarProps = {
+  mobileSearchInput: React.RefObject<HTMLInputElement>;
+  desktopSearchInput: React.RefObject<HTMLInputElement>;
+  drawerMenu: React.RefObject<HTMLInputElement>;
+};
+
+export type FooterProps = {
   mobileSearchInput: React.RefObject<HTMLInputElement>;
   desktopSearchInput: React.RefObject<HTMLInputElement>;
   drawerMenu: React.RefObject<HTMLInputElement>;
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  let { userId } = useLoaderData<typeof loader>();
   const mobileSearchInput = useRef<HTMLInputElement | null>(null);
   const desktopSearchInput = useRef<HTMLInputElement | null>(null);
   const drawerMenu = useRef<HTMLInputElement | null>(null);
 
-  console.log(userId);
+  let userData = useLoaderData<typeof loader>();
+  const userContextValue = {
+    userId: userData ? String(userData.UserID) : null,
+    username: userData ? String(userData.Username) : null,
+  };
 
   return (
     <html lang="en">
@@ -92,17 +111,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2e60c5" />
       </head>
       <body>
-        <Navbar
-          mobileSearchInput={mobileSearchInput}
-          desktopSearchInput={desktopSearchInput}
-          drawerMenu={drawerMenu}
-        />
-        {children}
-        <Footer
-          mobileSearchInput={mobileSearchInput}
-          desktopSearchInput={desktopSearchInput}
-          drawerMenu={drawerMenu}
-        />
+        <UserProvider value={userContextValue}>
+          <Navbar
+            mobileSearchInput={mobileSearchInput}
+            desktopSearchInput={desktopSearchInput}
+            drawerMenu={drawerMenu}
+          />
+          {children}
+          <Footer
+            mobileSearchInput={mobileSearchInput}
+            desktopSearchInput={desktopSearchInput}
+            drawerMenu={drawerMenu}
+          />
+        </UserProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

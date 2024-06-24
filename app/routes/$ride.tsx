@@ -60,6 +60,7 @@ export default function RideBySlug() {
       <div className="flex flex-col items-center">
         <Ride
           key={data.id}
+          rideId={data.id}
           title={data.title}
           description={data.description}
           mapUrl={data.mapUrl}

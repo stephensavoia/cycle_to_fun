@@ -1,6 +1,7 @@
-// import { accountExists } from "./queries";
+import { accountExists } from "./queries";
 
 export async function validate(
+  env: Env,
   username: string,
   email: string,
   password: string
@@ -52,9 +53,9 @@ export async function validate(
       break;
   }
 
-  //   if (!errors.email && (await accountExists(email))) {
-  //     errors.email = "An account with this email already exists.";
-  //   }
+  if (!errors.email && (await accountExists(env, email))) {
+    errors.email = "An account with this email already exists.";
+  }
 
   return Object.keys(errors).length ? errors : null;
 }
