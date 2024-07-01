@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, json } from "@remix-run/cloudflare";
 
 export const action = async ({ request, context }: ActionFunctionArgs) => {
+  console.log("like api");
   const env = context.cloudflare.env as Env;
   const formData = await request.formData();
   let userId = formData.get("userId");

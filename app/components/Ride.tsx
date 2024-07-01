@@ -1,6 +1,22 @@
-import { Form } from "@remix-run/react";
-import { useState } from "react";
+import { useFetcher } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { useUser } from "~/contexts/UserContext";
+
+export type RidesArray = {
+  id: number;
+  title: string;
+  description: string;
+  mapUrl: string;
+  tags: string;
+  duration: string;
+  distance: string;
+  difficulty: string;
+  routeType: string;
+  imageUrl: string;
+  altText: string;
+  slug: string;
+  rideLiked: boolean;
+};
 
 interface RideProps {
   rideId: number;
@@ -22,7 +38,7 @@ interface LikeResponse {
   success: boolean;
 }
 
-function Ride({
+export function Ride({
   rideId,
   title,
   description,
@@ -38,6 +54,8 @@ function Ride({
   rideLiked,
 }: RideProps) {
   let { userId, username } = useUser();
+  const fetcher = useFetcher();
+  const [rideButtonFilled, setRideButtonFilled] = useState(rideLiked);
 
   const handleShare = async () => {
     const navigator = window.navigator;
@@ -55,6 +73,13 @@ function Ride({
       console.log("Web Share API is not supported in your browser");
     }
   };
+
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data) {
+      const { success } = fetcher.data as LikeResponse;
+      if (success) setRideButtonFilled(!rideButtonFilled);
+    }
+  }, [fetcher.state]);
 
   return (
     <div className="ride-card w-11/12 mx-auto">
@@ -84,19 +109,23 @@ function Ride({
               Share
             </button>
             {userId && (
-              <Form method="post" navigate={false} className="w-full">
+              <fetcher.Form
+                id={`likeForm${rideId}`}
+                method="post"
+                className="w-full"
+              >
                 <input type="hidden" name="userId" value={userId} />
                 <input type="hidden" name="rideId" value={rideId} />
                 <button
                   type="submit"
                   className={`btn btn-outline btn-primary btn-extra ${
-                    rideLiked ? "bg-red-500" : ""
+                    rideButtonFilled ? "bg-red-500" : ""
                   }`}
                 >
                   Like
                 </button>
                 {rideLiked}
-              </Form>
+              </fetcher.Form>
             )}
           </div>
           <div className="card-body">

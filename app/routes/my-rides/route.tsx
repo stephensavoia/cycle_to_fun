@@ -3,7 +3,6 @@ import type {
   LoaderFunctionArgs,
   ActionFunctionArgs,
 } from "@remix-run/cloudflare";
-import { RidesArray } from "~/types";
 import {
   Link,
   json,
@@ -12,7 +11,7 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
-import Ride from "~/components/Ride";
+import { RidesArray, Ride } from "~/components/Ride";
 import { useEffect, useState } from "react";
 import { getAuthFromRequest } from "~/auth/auth";
 import { useUser } from "~/contexts/UserContext";

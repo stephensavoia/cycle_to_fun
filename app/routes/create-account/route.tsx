@@ -1,9 +1,6 @@
 import { json, type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form, Link, useActionData } from "@remix-run/react";
 
-import { Label, Input } from "~/components/forms/input";
-import { Button } from "~/components/forms/button";
-
 import { setAuthOnResponse, redirectIfLoggedInLoader } from "~/auth/auth";
 import { validate } from "./validate";
 import { createAccount } from "./queries";
@@ -47,7 +44,10 @@ export default function CreateAccount() {
     <div className="main-container max-w-[480px] mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Create an Account</h1>
       <Form method="post">
-        <Label htmlFor="username" className="grow">
+        <label
+          htmlFor="username"
+          className="grow input input-bordered flex items-center gap-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -56,7 +56,7 @@ export default function CreateAccount() {
           >
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
           </svg>
-          <Input
+          <input
             autoFocus
             id="username"
             name="username"
@@ -66,14 +66,17 @@ export default function CreateAccount() {
             placeholder="Username"
             required
           />
-        </Label>
+        </label>
         <span
           id="username-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.username && actionResult.errors.username}
         </span>
-        <Label htmlFor="email">
+        <label
+          htmlFor="email"
+          className="input input-bordered flex items-center gap-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -83,7 +86,7 @@ export default function CreateAccount() {
             <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
             <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
           </svg>
-          <Input
+          <input
             id="email"
             name="email"
             type="email"
@@ -92,14 +95,17 @@ export default function CreateAccount() {
             placeholder="Email"
             required
           />
-        </Label>
+        </label>
         <span
           id="email-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.email && actionResult.errors.email}
         </span>
-        <Label htmlFor="password">
+        <label
+          htmlFor="password"
+          className="input input-bordered flex items-center gap-2"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -112,7 +118,7 @@ export default function CreateAccount() {
               clipRule="evenodd"
             />
           </svg>
-          <Input
+          <input
             id="password"
             name="password"
             type="password"
@@ -121,14 +127,16 @@ export default function CreateAccount() {
             placeholder="Password"
             required
           />
-        </Label>
+        </label>
         <span
           id="password-error"
           className="label label-text-alt pt-1 pb-4 text-error"
         >
           {actionResult?.errors?.password && actionResult.errors.password}
         </span>
-        <Button type="submit">CREATE ACCOUNT</Button>
+        <button type="submit" className="btn btn-primary btn-account w-full">
+          CREATE ACCOUNT
+        </button>
         <div className="opacity-80 mt-3">
           Already have an account?{" "}
           <Link className="link mt-1" to="/login">

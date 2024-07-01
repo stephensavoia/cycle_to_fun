@@ -1,7 +1,6 @@
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { RidesArray } from "~/types";
 import { useLoaderData, redirect } from "@remix-run/react";
-import Ride from "~/components/Ride";
+import { Ride, RidesArray } from "~/components/Ride";
 
 export async function loader({ params, context }: LoaderFunctionArgs) {
   const env = context.cloudflare.env as Env;
@@ -72,6 +71,7 @@ export default function RideBySlug() {
           imageUrl={data.imageUrl}
           altText={data.altText}
           slug={data.slug}
+          rideLiked={data.rideLiked}
         />
       </div>
     </div>

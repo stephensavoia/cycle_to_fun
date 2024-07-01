@@ -3,9 +3,9 @@ import type {
   LoaderFunctionArgs,
   ActionFunctionArgs,
 } from "@remix-run/cloudflare";
-import { RidesArray } from "~/types";
-import { json, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
-import Ride from "~/components/Ride";
+
+import { json, useFetcher, useLoaderData } from "@remix-run/react";
+import { Ride, RidesArray } from "~/components/Ride";
 import { useEffect, useState } from "react";
 import { getAuthFromRequest } from "~/auth/auth";
 
@@ -13,7 +13,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   let userId = await getAuthFromRequest(request);
   const url = new URL(request.url);
   let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
-  console.log("lastRideId Loader", lastRideId);
 
   const env = context.cloudflare.env as Env;
   let queryModifier = lastRideId ? `WHERE r.id < ?` : "";
@@ -46,7 +45,6 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const rides: RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
   lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
-  console.log("newLastRideId Loader", lastRideId);
 
   if (!rides || rides.length === 0)
     throw new Response("Page not found", { status: 404 });
@@ -125,13 +123,9 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
-  const location = useLocation();
-  console.log(location);
-
   const [rides, setRides] = useState(data.rides);
   const [lastRideId, setLastRideId] = useState(data.lastRideId);
   const [hasNextPage, setHasNextPage] = useState(data.hasNextPage);
-  console.log("lastRideId Index", lastRideId);
 
   function loadMore() {
     fetcher.load(`?index&lastRideId=${lastRideId}`);
@@ -144,15 +138,20 @@ export default function Index() {
 
   useEffect(() => {
     const newData = fetcher.data;
+
     if (!newData || fetcher.state === "loading") {
       return;
     }
 
-    if (newData) {
+    if (
+      newData &&
+      newData.rides[newData.rides.length - 1].id !== rides[rides.length - 1].id
+    ) {
       setRides((prevRides) => [...prevRides, ...newData.rides]);
+      // Ryan Florances easy suggestion is make the above just newData.rides
+      // and make the loader give all data, not just the new data, but what if there are hudnreds of rides?
       setHasNextPage(newData.hasNextPage);
       setLastRideId(newData.lastRideId);
-      console.log("newLastRideId Index", newData.lastRideId);
     }
   }, [fetcher.data]);
 
@@ -179,7 +178,8 @@ export default function Index() {
         ))}
       </div>
 
-      {fetcher.state === "loading" || pageLoading === true ? (
+      {(fetcher.state === "loading" && hasNextPage === true) ||
+      pageLoading === true ? (
         <div className="h-12 flex items-center justify-center">
           <span className="loading loading-dots loading-md block mx-auto opacity-60"></span>
         </div>

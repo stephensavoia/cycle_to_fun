@@ -33,13 +33,13 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  let auth = await getAuthFromRequest(request);
-  if (auth) {
+  let id = await getAuthFromRequest(request);
+  if (id) {
     const env = context.cloudflare.env as Env;
     let { results } = await env.DB.prepare(
       "SELECT UserID, Username FROM users WHERE UserID = ?;"
     )
-      .bind(auth)
+      .bind(id)
       .all();
     return results[0];
   } else {
