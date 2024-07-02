@@ -1,29 +1,20 @@
-import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { useLoaderData, redirect } from "@remix-run/react";
+import type {
+  MetaFunction,
+  LoaderFunctionArgs,
+  ActionFunctionArgs,
+} from "@remix-run/cloudflare";
+import { json, useLoaderData } from "@remix-run/react";
+import { getAuthFromRequest } from "~/auth/auth";
 import { Ride, RidesArray } from "~/components/Ride";
+import { getRide, likeRide } from "~/queries/queries";
 
-export async function loader({ params, context }: LoaderFunctionArgs) {
+export async function loader({ params, request, context }: LoaderFunctionArgs) {
+  const userId = await getAuthFromRequest(request);
   const env = context.cloudflare.env as Env;
   const { ride } = params;
   if (ride === undefined) throw new Response("Ride is undefined");
-
-  if (ride === "random") {
-    let { results } = await env.DB.prepare(
-      "SELECT slug FROM rides ORDER BY RANDOM() LIMIT 1;"
-    ).all();
-    const randomRide = results[0].slug;
-    return redirect(`/${randomRide}`);
-  }
-
-  let { results } = await env.DB.prepare("SELECT * FROM rides WHERE slug = ?;")
-    .bind(`${ride}`)
-    .all();
-
-  const data = results[0];
-
-  if (!data) throw new Response("Ride not found", { status: 404 });
-
-  return data;
+  const rideData = await getRide(env, userId, ride);
+  return rideData;
 }
 
 export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
@@ -49,6 +40,19 @@ export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
     { name: "og:description", content: metaDescription },
     { name: "og:image", content: metaImg },
   ];
+};
+
+export const action = async ({ request, context }: ActionFunctionArgs) => {
+  const env = context.cloudflare.env as Env;
+  const formData = await request.formData();
+  let userId = String(formData.get("userId"));
+  let rideId = String(formData.get("rideId"));
+
+  if (!userId || !rideId) {
+    return json({ success: false });
+  } else {
+    return likeRide(env, userId, rideId);
+  }
 };
 
 export default function RideBySlug() {

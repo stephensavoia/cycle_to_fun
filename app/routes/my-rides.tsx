@@ -3,51 +3,31 @@ import type {
   LoaderFunctionArgs,
   ActionFunctionArgs,
 } from "@remix-run/cloudflare";
-
-import { json, useFetcher, useLoaderData } from "@remix-run/react";
-import { Ride, RidesArray } from "~/components/Ride";
+import {
+  Link,
+  json,
+  redirect,
+  useFetcher,
+  useLoaderData,
+} from "@remix-run/react";
+import { Ride } from "~/components/Ride";
 import { useEffect, useState } from "react";
 import { getAuthFromRequest } from "~/auth/auth";
+import { useUser } from "~/contexts/UserContext";
+import { getMyRides, likeRide } from "~/queries/queries";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  let userId = await getAuthFromRequest(request);
+  const userId = await getAuthFromRequest(request);
+  if (!userId) throw redirect("/create-account");
   const url = new URL(request.url);
-  let lastRideId = Number(url.searchParams.get("lastRideId")) || null;
-
+  const lastRideIdUrl = Number(url.searchParams.get("lastRideId")) || null;
   const env = context.cloudflare.env as Env;
-  let queryModifier = lastRideId ? `WHERE r.id < ?` : "";
 
-  let statement = env.DB.prepare(`
-    SELECT r.*, 
-           CASE 
-             WHEN ul.rideId IS NOT NULL THEN 1 
-             ELSE 0 
-           END as rideLiked
-    FROM rides r
-    LEFT JOIN user_likes ul ON r.id = ul.RideID AND ul.UserID = ?
-    ${queryModifier}
-    ORDER BY r.id DESC
-    LIMIT 5;
-  `);
-
-  if (userId && lastRideId) {
-    statement = statement.bind(userId, lastRideId);
-  } else if (userId && !lastRideId) {
-    statement = statement.bind(userId);
-  } else if (lastRideId) {
-    statement = statement.bind("0", lastRideId);
-  } else {
-    statement = statement.bind("0");
-  }
-
-  let { results }: { results: RidesArray[] } = await statement.all();
-
-  const rides: RidesArray[] = results.slice(0, 4);
-  const hasNextPage = results.length > 4;
-  lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
-
-  if (!rides || rides.length === 0)
-    throw new Response("Page not found", { status: 404 });
+  const { rides, lastRideId, hasNextPage } = await getMyRides(
+    env,
+    userId,
+    lastRideIdUrl
+  );
 
   return { rides, lastRideId, hasNextPage };
 }
@@ -55,42 +35,13 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 export const action = async ({ request, context }: ActionFunctionArgs) => {
   const env = context.cloudflare.env as Env;
   const formData = await request.formData();
-  let userId = formData.get("userId");
-  let rideId = formData.get("rideId");
+  let userId = String(formData.get("userId"));
+  let rideId = String(formData.get("rideId"));
 
-  // check if userId and rideId are in a row on "user_likes" table
-  let { results } = await env.DB.prepare(
-    "SELECT * FROM user_likes WHERE UserID = ? AND RideID = ?;"
-  )
-    .bind(userId, rideId)
-    .all();
-
-  if (results.length === 0) {
-    let { success } = await env.DB.prepare(
-      "INSERT INTO user_likes (UserID, RideID) VALUES (?,?) ON CONFLICT (UserID, RideID) DO NOTHING;"
-    )
-      .bind(userId, rideId)
-      .run();
-
-    if (success) {
-      console.log("Like was added");
-      return json({ success: true });
-    } else {
-      return json({ success: false });
-    }
+  if (!userId || !rideId) {
+    return json({ success: false });
   } else {
-    let { success } = await env.DB.prepare(
-      "DELETE FROM user_likes WHERE UserID = ? AND RideID = ?;"
-    )
-      .bind(userId, rideId)
-      .run();
-
-    if (success) {
-      console.log("Like was removed");
-      return json({ success: true });
-    } else {
-      return json({ success: false });
-    }
+    return likeRide(env, userId, rideId);
   }
 };
 
@@ -98,7 +49,7 @@ export const meta: MetaFunction = ({ matches }) => {
   const parentMeta = matches.flatMap((match) => match.meta ?? []);
   return [
     ...parentMeta,
-    { title: "Cycle TO Fun" },
+    { title: "My Rides | Cycle TO Fun" },
     {
       name: "description",
       content:
@@ -119,13 +70,15 @@ export const meta: MetaFunction = ({ matches }) => {
   ];
 };
 
-export default function Index() {
+export default function MyRides() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof loader>();
   const [pageLoading, setPageLoading] = useState(true);
   const [rides, setRides] = useState(data.rides);
   const [lastRideId, setLastRideId] = useState(data.lastRideId);
   const [hasNextPage, setHasNextPage] = useState(data.hasNextPage);
+
+  const { userId, username } = useUser();
 
   function loadMore() {
     fetcher.load(`?index&lastRideId=${lastRideId}`);
@@ -143,13 +96,15 @@ export default function Index() {
       return;
     }
 
+    console.log(newData);
+
     if (
       newData &&
-      newData.rides[newData.rides.length - 1].id !== rides[rides.length - 1].id
+      !newData.rides.some((newRide) =>
+        rides.some((ride) => ride.id === newRide.id)
+      )
     ) {
       setRides((prevRides) => [...prevRides, ...newData.rides]);
-      // Ryan Florances easy suggestion is make the above just newData.rides
-      // and make the loader give all data, not just the new data, but what if there are hudnreds of rides?
       setHasNextPage(newData.hasNextPage);
       setLastRideId(newData.lastRideId);
     }
@@ -157,7 +112,21 @@ export default function Index() {
 
   return (
     <div className="main-container">
+      <div className="card bg-base-200 w-auto mx-auto mb-5 max-w-[30rem]">
+        <div className="card-body">
+          <h2 className="card-title">Welcome, {username}!</h2>
+          <p>
+            Below is a list of your "liked" rides. For more information on how
+            to use Cycle TO Fun, check out our{" "}
+            <Link to="/about" className="link">
+              About Page
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
       <div className="flex flex-col items-center">
+        {rides.length === 0 && <div>You haven't liked any rides yet.</div>}
         {rides.map((ride) => (
           <Ride
             rideId={ride.id}

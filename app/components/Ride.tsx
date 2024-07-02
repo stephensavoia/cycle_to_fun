@@ -118,13 +118,14 @@ export function Ride({
                 <input type="hidden" name="rideId" value={rideId} />
                 <button
                   type="submit"
+                  name="intent"
+                  value="like"
                   className={`btn btn-outline btn-primary btn-extra ${
-                    rideButtonFilled ? "bg-red-500" : ""
+                    rideButtonFilled ? "btn-ride-liked" : ""
                   }`}
                 >
                   Like
                 </button>
-                {rideLiked}
               </fetcher.Form>
             )}
           </div>

@@ -129,6 +129,12 @@ body {
   width: 100%;
 }
 
+.btn-outline.btn-primary.btn-ride-liked {
+  color: white;
+  background-color: oklch(var(--p));
+  border-color: oklch(var(--p));
+}
+
 .menu li > *:not(ul, .menu-title, details, .btn):active,
 .menu li > *:not(ul, .menu-title, details, .btn).active,
 .menu li > details > summary:active {

@@ -3,11 +3,11 @@ import type {
   LoaderFunctionArgs,
   ActionFunctionArgs,
 } from "@remix-run/cloudflare";
-import { RidesArray } from "~/types";
+import { RidesArray, Ride } from "~/components/Ride";
 import { json, useFetcher, useLoaderData } from "@remix-run/react";
-import Ride from "~/components/Ride";
 import { useEffect, useState } from "react";
 import { getAuthFromRequest } from "~/auth/auth";
+import { likeRide } from "~/queries/queries";
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
   let userId = await getAuthFromRequest(request);
@@ -44,12 +44,24 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const rides: RidesArray[] = results.slice(0, 4);
   const hasNextPage = results.length > 4;
   lastRideId = rides.length > 0 ? rides[rides.length - 1].id : 1;
-  console.log("newLastRideId Loader", lastRideId);
 
   if (!rides) throw new Response("Page not found", { status: 404 });
 
   return { rides, lastRideId, hasNextPage, query };
 }
+
+export const action = async ({ request, context }: ActionFunctionArgs) => {
+  const env = context.cloudflare.env as Env;
+  const formData = await request.formData();
+  let userId = String(formData.get("userId"));
+  let rideId = String(formData.get("rideId"));
+
+  if (!userId || !rideId) {
+    return json({ success: false });
+  } else {
+    return likeRide(env, userId, rideId);
+  }
+};
 
 export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
   const parentMeta = matches.flatMap((match) => match.meta ?? []);
@@ -78,48 +90,6 @@ export const meta: MetaFunction<typeof loader> = ({ matches, data }) => {
       content: "https://www.cycletofun.com/img/og-image.jpg",
     },
   ];
-};
-
-export const action = async ({ request, context }: ActionFunctionArgs) => {
-  const env = context.cloudflare.env as Env;
-  const formData = await request.formData();
-  let userId = formData.get("userId");
-  let rideId = formData.get("rideId");
-
-  // check if userId and rideId are in a row on "user_likes" table
-  let { results } = await env.DB.prepare(
-    "SELECT * FROM user_likes WHERE UserID = ? AND RideID = ?;"
-  )
-    .bind(userId, rideId)
-    .all();
-
-  if (results.length === 0) {
-    let { success } = await env.DB.prepare(
-      "INSERT INTO user_likes (UserID, RideID) VALUES (?,?) ON CONFLICT (UserID, RideID) DO NOTHING;"
-    )
-      .bind(userId, rideId)
-      .run();
-
-    if (success) {
-      console.log("Like was added");
-      return json({ success: true });
-    } else {
-      return json({ success: false });
-    }
-  } else {
-    let { success } = await env.DB.prepare(
-      "DELETE FROM user_likes WHERE UserID = ? AND RideID = ?;"
-    )
-      .bind(userId, rideId)
-      .run();
-
-    if (success) {
-      console.log("Like was removed");
-      return json({ success: true });
-    } else {
-      return json({ success: false });
-    }
-  }
 };
 
 export default function Index() {
