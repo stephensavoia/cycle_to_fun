@@ -8,7 +8,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
 import Navbar from "~/components/Navbar";
 import Footer from "~/components/Footer";
 import stylesheet from "~/tailwind.css?url";

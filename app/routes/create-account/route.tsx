@@ -1,4 +1,4 @@
-import { json, type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { json, type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { Form, Link, useActionData } from "@remix-run/react";
 
 import { setAuthOnResponse, redirectIfLoggedInLoader } from "~/auth/auth";

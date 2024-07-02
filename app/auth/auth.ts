@@ -1,4 +1,8 @@
-import { type DataFunctionArgs, createCookie, redirect } from "@remix-run/node";
+import {
+  type DataFunctionArgs,
+  createCookie,
+  redirect,
+} from "@remix-run/cloudflare";
 
 let secret = process.env.COOKIE_SECRET || "default";
 if (secret === "default") {
