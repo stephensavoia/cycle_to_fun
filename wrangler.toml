@@ -1,5 +1,6 @@
 name = "cycle-to-fun"
 compatibility_date = "2024-06-11"
+compatibility_flags = [ "nodejs_compat" ]
 
 [[d1_databases]]
 binding = "DB"
