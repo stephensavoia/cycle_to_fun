@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export async function login(env: Env, email: string, password: string) {
   // get user and haspass and salt for the user

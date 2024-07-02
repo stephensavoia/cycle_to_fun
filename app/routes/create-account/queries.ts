@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 export async function accountExists(env: Env, email: string) {
   let { results } = await env.DB.prepare(
