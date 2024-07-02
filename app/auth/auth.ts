@@ -4,7 +4,10 @@ import {
   redirect,
 } from "@remix-run/cloudflare";
 
-let secret = process.env.COOKIE_SECRET || "default";
+import * as process from "node:process";
+import { env } from "node:process";
+
+let secret = env.COOKIE_SECRET || "default";
 if (secret === "default") {
   console.warn(
     "🚨 No COOKIE_SECRET environment variable set, using default. The app is insecure in production."
@@ -18,7 +21,7 @@ let cookie = createCookie("auth", {
   // 30 days
   maxAge: 30 * 24 * 60 * 60,
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: env.NODE_ENV === "production",
   sameSite: "lax",
 });
 
