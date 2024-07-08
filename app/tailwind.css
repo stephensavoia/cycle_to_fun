@@ -76,11 +76,11 @@ body {
   border-radius: 0;
 }
 
-.card figure {
+.card .ride-img-container {
   min-height: 252px;
 }
 
-.card figure::before {
+.card .ride-img-container::before {
   content: "";
   position: absolute;
   top: 0;

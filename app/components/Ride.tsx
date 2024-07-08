@@ -57,6 +57,19 @@ export function Ride({
   const fetcher = useFetcher();
   const [rideButtonFilled, setRideButtonFilled] = useState(rideLiked);
 
+  const lastPeriodIndex = imageUrl.lastIndexOf("."); // Find the last period in the imageUrl
+  const imageUrlBase = imageUrl.slice(0, lastPeriodIndex); // Get the base URL without the extension
+  const imageExtension = imageUrl.slice(lastPeriodIndex); // Get the extension, including the period
+
+  // Create image URLs for different pixel ratios
+  // const imageUrl1x = `${imageUrlBase}-480${imageExtension}`;
+  // const imageUrl2x = `${imageUrlBase}-960${imageExtension}`;
+  // const imageUrl3x = `${imageUrlBase}-1440${imageExtension}`;
+
+  const imageUrl1x = `/img/test-image-480.jpg`;
+  const imageUrl2x = `/img/test-image-960.jpg`;
+  const imageUrl3x = `/img/test-image-1200.jpg`;
+
   const handleShare = async () => {
     const navigator = window.navigator;
     if (navigator.share) {
@@ -84,19 +97,34 @@ export function Ride({
   return (
     <div className="ride-card w-11/12 mx-auto">
       <div className="card card-compact w-auto mx-auto max-w-[30rem] bg-base-100">
-        <figure
-          className="bg-base-200 relative"
+        <div
+          className="ride-img-container bg-base-200 relative"
           style={{
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: "cover",
-            backgroundBlendMode: "multiply",
-            backgroundColor: "rgba(0, 0, 0, 0.25)",
             height: "252px",
-            backgroundPosition: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.25)",
+            overflow: "hidden",
           }}
         >
-          <h2 className="ride-card-title">{title}</h2>
-        </figure>
+          {/* Because the image always has a height of 252px,  */}
+          <img
+            src={imageUrl1x} // Use the 1x image as the src
+            srcSet={`${imageUrl1x} 1x, ${imageUrl2x} 2x, ${imageUrl3x} 3x`} // Specify the images for 1x, 2x, and 3x pixel densities
+            alt={title}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              mixBlendMode: "multiply",
+            }}
+          />
+          <h2 className="ride-card-title" style={{ position: "absolute" }}>
+            {title}
+          </h2>
+        </div>
         <div className="flex flex-row justify-start">
           <div className="card-actions flex flex-col justify-start pt-4">
             <a href={mapUrl} className="btn btn-primary btn-getmap">
