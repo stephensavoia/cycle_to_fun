@@ -61,14 +61,9 @@ export function Ride({
   const imageUrlBase = imageUrl.slice(0, lastPeriodIndex); // Get the base URL without the extension
   const imageExtension = imageUrl.slice(lastPeriodIndex); // Get the extension, including the period
 
-  // Create image URLs for different pixel ratios
-  // const imageUrl1x = `${imageUrlBase}-480${imageExtension}`;
-  // const imageUrl2x = `${imageUrlBase}-960${imageExtension}`;
-  // const imageUrl3x = `${imageUrlBase}-1440${imageExtension}`;
-
-  const imageUrl1x = `/img/test-image-480.jpg`;
-  const imageUrl2x = `/img/test-image-960.jpg`;
-  const imageUrl3x = `/img/test-image-1200.jpg`;
+  const imageUrl1x = `${imageUrlBase}-480${imageExtension}`;
+  const imageUrl2x = `${imageUrlBase}-960${imageExtension}`;
+  const imageUrl3x = `${imageUrlBase}-1200${imageExtension}`;
 
   const handleShare = async () => {
     const navigator = window.navigator;
@@ -108,10 +103,10 @@ export function Ride({
             overflow: "hidden",
           }}
         >
-          {/* Because the image always has a height of 252px,  */}
           <img
-            src={imageUrl1x} // Use the 1x image as the src
-            srcSet={`${imageUrl1x} 1x, ${imageUrl2x} 2x, ${imageUrl3x} 3x`} // Specify the images for 1x, 2x, and 3x pixel densities
+            src={imageUrl1x}
+            srcSet={`${imageUrl1x} 480w, ${imageUrl2x} 960w, ${imageUrl3x} 1200w`}
+            sizes="(min-width:480px) 30rem, 100vw "
             alt={title}
             style={{
               width: "100%",
