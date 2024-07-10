@@ -208,8 +208,7 @@ export default function About() {
             </div>
             <div className="collapse-content">
               <p>
-                Cycle TO Fun was made with Cloudflare D1, Prisma, Remix, and
-                DiasyUI.
+                Cycle TO Fun was made with Cloudflare D1, Remix, and DiasyUI.
               </p>
             </div>
           </div>
