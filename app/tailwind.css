@@ -161,6 +161,19 @@ body {
   opacity: 0.6;
 }
 
+.high-res-img,
+.low-res-img {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.img-visible {
+  opacity: 1;
+}
+
+.img-hidden {
+  opacity: 0;
+}
+
 /* Items Grid */
 .items-container {
   display: grid;

@@ -1,5 +1,5 @@
 import { useFetcher } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "~/contexts/UserContext";
 
 export type RidesArray = {
@@ -56,14 +56,28 @@ export function Ride({
   let { userId, username } = useUser();
   const fetcher = useFetcher();
   const [rideButtonFilled, setRideButtonFilled] = useState(rideLiked);
+  const [imgIsLoaded, setImgIsLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement | null>(null);
 
   const lastPeriodIndex = imageUrl.lastIndexOf("."); // Find the last period in the imageUrl
   const imageUrlBase = imageUrl.slice(0, lastPeriodIndex); // Get the base URL without the extension
   const imageExtension = imageUrl.slice(lastPeriodIndex); // Get the extension, including the period
 
+  const imageUrlTiny = `${imageUrlBase}-tiny${imageExtension}`;
   const imageUrl1x = `${imageUrlBase}-480${imageExtension}`;
   const imageUrl2x = `${imageUrlBase}-960${imageExtension}`;
   const imageUrl3x = `${imageUrlBase}-1200${imageExtension}`;
+
+  const handleImageLoad = () => {
+    setImgIsLoaded(true);
+  };
+
+  // If image is already in cache (which doesn't trigger onLoad event)
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setImgIsLoaded(true);
+    }
+  }, []);
 
   const handleShare = async () => {
     const navigator = window.navigator;
@@ -100,14 +114,41 @@ export function Ride({
             justifyContent: "center",
             alignItems: "center",
             overflow: "hidden",
+            position: "relative",
           }}
         >
           <img
+            src={imageUrlTiny}
+            alt={title}
+            className={`low-res-img ${
+              imgIsLoaded ? "img-hidden" : "img-visible"
+            }`}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center",
+              filter: "blur(20px)",
+              mixBlendMode: "multiply",
+            }}
+          />
+          <img
+            ref={imgRef}
             src={imageUrl1x}
             srcSet={`${imageUrl1x} 480w, ${imageUrl2x} 960w, ${imageUrl3x} 1200w`}
-            sizes="(min-width:480px) 30rem, 100vw "
+            sizes="(min-width:480px) 30rem, 100vw"
             alt={title}
+            className={`high-res-img ${
+              imgIsLoaded ? "img-visible" : "img-hidden"
+            }`}
+            onLoad={handleImageLoad}
             style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
               width: "100%",
               height: "100%",
               objectFit: "cover",
